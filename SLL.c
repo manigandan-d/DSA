@@ -16,6 +16,8 @@ void insert_after_pos(void);
 void delete_at_pos(void);
 void reverse(void);
 void print_forward_reverse(struct Node *);
+void delete_by_val(int);
+void find_min_max(void);
 
 int main() {
     append();
@@ -39,6 +41,14 @@ int main() {
     printf("Print forward and reverse order: ");
     print_forward_reverse(head);
     printf("\n");
+
+    int val = 0;
+    printf("Enter the value to be deleted: ");
+    scanf("%d", &val);
+    delete_by_val(val);
+    print();
+
+    find_min_max();
 
     return 0;
 }
@@ -173,16 +183,16 @@ void delete_at_pos() {
 }
 
 void reverse() {
-    struct Node *cur, *prev, *next; 
+    struct Node *curr, *prev, *next; 
 
-    cur = head; 
+    curr = head; 
     prev = NULL;
 
-    while(cur != NULL) {
-        next = cur->link;
-        cur->link = prev;
-        prev = cur;
-        cur = next;
+    while(curr != NULL) {
+        next = curr->link;
+        curr->link = prev;
+        prev = curr;
+        curr = next;
     }
 
     head = prev;
@@ -197,4 +207,60 @@ void print_forward_reverse(struct Node *node) {
     printf("%d ", node->data);
     print_forward_reverse(node->link);
     printf("%d ", node->data);
+}
+
+void delete_by_val(int val) {
+    if(head == NULL) {
+        printf("List is empty, nothing to delete\n");
+        return; 
+    }
+
+    if(head->data == val) {
+        struct Node *temp = head;
+        head = head->link;
+        free(temp);
+        printf("Deleted %d\n", val);
+        return;
+    }
+
+    struct Node *curr = head;
+    while(curr->link != NULL && curr->link->data != val) {
+        curr = curr->link;
+    }
+
+    if(curr->link == NULL) {
+        printf("Value %d not found in the list\n", val);
+        return;
+    }
+
+    struct Node *temp = curr->link;
+    curr->link = curr->link->link;
+    free(temp);
+    printf("Deleted %d\n", val);
+}
+
+void find_min_max() {
+    if(head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+
+    struct Node *temp = head; 
+    int min = temp->data;
+    int max = temp->data; 
+
+    while(temp != NULL) {
+        if(temp->data < min) {
+            min = temp->data;
+        }
+
+        if(temp->data > max) {
+            max = temp->data; 
+        }
+
+        temp = temp->link; 
+    }
+
+    printf("Minimum element: %d\n", min);
+    printf("Maximum element: %d\n", max);
 }
